@@ -1,0 +1,218 @@
+Program.Sub.ScreenSU.Start
+gui.Form1..create
+gui.Form1..caption("Shipment Details")
+gui.Form1..size(5685,3240)
+gui.Form1..minx(0)
+gui.Form1..miny(0)
+gui.Form1..position(0,360)
+gui.Form1..event(unload,form1_unload)
+gui.Form1..alwaysontop(False)
+gui.Form1..fontname("Arial")
+gui.Form1..fontsize(7)
+gui.Form1..forecolor(0)
+gui.Form1..fontstyle(,,,,)
+gui.Form1..BackColor(15790320)
+gui.Form1..controlbox(True)
+gui.Form1..maxbutton(False)
+gui.Form1..minbutton(True)
+gui.Form1..mousepointer(0)
+gui.Form1..moveable(True)
+gui.Form1..sizeable(False)
+gui.Form1..ShowInTaskBar(False)
+gui.Form1..titlebar(True)
+gui.Form1.lblInvoice.create(label,"Invoice",True,1500,300,1,1995,210,True,0,MicrosoftSansSerif,8,15790320,0)
+gui.Form1.lblInvoice.defaultvalue("")
+gui.Form1.lblInvoice.controlgroup(0)
+gui.Form1.lblOrder.create(label,"Order Number",True,1500,300,1,195,210,True,0,MicrosoftSansSerif,8,15790320,0)
+gui.Form1.lblOrder.defaultvalue("")
+gui.Form1.lblOrder.controlgroup(0)
+gui.Form1.lblLine.create(label,"Line",True,1500,300,1,3780,210,True,0,MicrosoftSansSerif,8,15790320,0)
+gui.Form1.lblLine.defaultvalue("")
+gui.Form1.lblLine.controlgroup(0)
+gui.Form1.lblWeight.create(label,"Weight",True,1500,300,1,195,1260,True,0,MicrosoftSansSerif,8,15790320,0)
+gui.Form1.lblWeight.defaultvalue("")
+gui.Form1.lblWeight.controlgroup(0)
+gui.Form1.lblCarton.create(label,"Cartons",True,1500,300,1,1995,1260,True,0,MicrosoftSansSerif,8,15790320,0)
+gui.Form1.lblCarton.defaultvalue("")
+gui.Form1.lblCarton.controlgroup(0)
+gui.Form1.txtOrder.create(textbox,"",True,1500,330,0,195,630,True,0,MicrosoftSansSerif,8,16777215,1)
+gui.Form1.txtOrder.defaultvalue("")
+gui.Form1.txtOrder.controlgroup(0)
+gui.Form1.txtInvoice.create(textbox,"",True,1500,330,0,1995,630,True,0,MicrosoftSansSerif,8,16777215,1)
+gui.Form1.txtInvoice.defaultvalue("")
+gui.Form1.txtInvoice.controlgroup(0)
+gui.Form1.txtWeight.create(textbox,"",True,1500,330,0,195,1680,True,0,MicrosoftSansSerif,8,16777215,1)
+gui.Form1.txtWeight.defaultvalue("")
+gui.Form1.txtWeight.controlgroup(0)
+gui.Form1.txtCarton.create(textbox,"",True,1500,330,0,1995,1680,True,0,MicrosoftSansSerif,8,16777215,1)
+gui.Form1.txtCarton.defaultvalue("")
+gui.Form1.txtCarton.controlgroup(0)
+gui.Form1.txtLine.create(textbox,"",True,1500,330,0,3780,630,True,0,MicrosoftSansSerif,8,16777215,1)
+gui.Form1.txtLine.defaultvalue("")
+gui.Form1.txtLine.controlgroup(0)
+gui.Form1.cmdDone.create(button)
+gui.Form1.cmdDone.caption("Done")
+gui.Form1.cmdDone.visible(True)
+gui.Form1.cmdDone.size(1125,345)
+gui.Form1.cmdDone.zorder(0)
+gui.Form1.cmdDone.position(195,2205)
+gui.Form1.cmdDone.enabled(True)
+gui.Form1.cmdDone.fontname("Microsoft Sans Serif")
+gui.Form1.cmdDone.fontsize(8)
+gui.Form1.cmdDone.event(click,cmdDone_Click)
+gui.Form1.cmdDone.defaultvalue("")
+gui.Form1.cmdDone.controlgroup(0)
+gui.Form1.txtOrder.tabstop(True)
+gui.Form1.txtOrder.tabindex(14)
+gui.Form1.txtInvoice.tabstop(True)
+gui.Form1.txtInvoice.tabindex(24)
+gui.Form1.txtWeight.tabstop(True)
+gui.Form1.txtWeight.tabindex(44)
+gui.Form1.txtCarton.tabstop(True)
+gui.Form1.txtCarton.tabindex(54)
+gui.Form1.txtLine.tabstop(True)
+gui.Form1.txtLine.tabindex(64)
+gui.Form1.cmdDone.tabstop(True)
+gui.Form1.cmdDone.tabindex(65)
+
+
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.SetErrorHandler("Main_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+F.ODBC.Connection!conx.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+F.Intrinsic.Control.If(V.Caller.Hook,=,33008)
+	F.Intrinsic.Control.CallSub(Shipment)
+F.Intrinsic.Control.EndIf
+
+
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Main_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3979_MIC_Ord_His.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form1_unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Main.End
+
+Program.Sub.Shipment.Start
+F.Intrinsic.Control.SetErrorHandler("Shipment_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sWeight.Declare(String)
+V.Local.sCarton.Declare(String)
+V.Local.sOrder.Declare(String)
+V.Local.sSql.Declare(String)
+V.Local.sLine.Declare(String)
+'Pad Line number so it will match the Table
+V.Local.sLine.Set(V.Passed.Item)
+F.Intrinsic.String.RPad(V.Local.sLine,"0",4,V.Local.sLine)
+'Pad the order number so it will match the table
+V.Local.sOrder.Set(V.Passed.000002)
+F.Intrinsic.String.LPad(V.Local.sOrder,"0",7,V.Local.sOrder)
+'Sql Query to order hist line to get the weight
+F.Intrinsic.String.Concat("Select PKGD_Weight from V_Order_Hist_Line where Invoice = '",V.Passed.Invoice,"' and Order_No = '",V.Local.sOrder,"' and Order_Line = '",V.Local.sLine,"'",V.Local.sSql)
+F.ODBC.Connection!conx.OpenLocalRecordsetRO("rst",V.Local.sSql)
+'If there are records fill the text boxes on the form
+F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,False)
+	V.Local.sWeight.Set(V.ODBC.conx!rst.FieldVal!PKGD_Weight)
+	Gui.Form1.txtOrder.Text(V.Passed.000002)
+	Gui.Form1.txtInvoice.Text(V.Passed.Invoice)
+	Gui.Form1.txtLine.Text(V.Passed.Item)
+	Gui.Form1.txtWeight.Text(V.Local.sWeight)
+'Else display message
+F.Intrinsic.Control.Else
+	F.Intrinsic.UI.Msgbox("There is no Weight Information for this order number!","Warning")
+F.Intrinsic.Control.EndIf
+F.ODBC.conx!rst.Close
+'SQL Query for the Cartons for that order and invoice combo
+F.Intrinsic.String.Concat("Select Cartons from V_Order_Hist_Head where Invoice = '",V.Passed.Invoice,"' and Order_No = '",V.Local.sOrder,"'",V.Local.sSql)
+F.ODBC.Connection!conx.OpenLocalRecordsetRO("rst",V.Local.sSql)
+'If records fill in the carton text box on the form.
+F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,False)
+	V.Local.sCarton.Set(V.ODBC.conx!rst.FieldVal!Cartons)
+	Gui.Form1.txtCarton.Text(V.Local.sCarton)
+F.Intrinsic.Control.Else
+	F.Intrinsic.UI.Msgbox("No carton Information for this order number!","Warning")
+F.Intrinsic.Control.EndIf
+F.ODBC.conx!rst.Close
+'disable all the textboxes so no changes can be made to the information
+Gui.Form1.txtInvoice.Enabled(False)
+Gui.Form1.txtLine.Enabled(False)
+Gui.Form1.txtOrder.Enabled(False)
+Gui.Form1.txtWeight.Enabled(False)
+Gui.Form1.txtCarton.Enabled(False)
+Gui.Form1..Show
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Shipment_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3979_MIC_Ord_His.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form1_unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Shipment.End
+
+Program.Sub.cmdDone_Click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdDone_Click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+F.ODBC.Connection!conx.Close
+F.Intrinsic.Control.End
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdDone_Click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3979_MIC_Ord_His.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form1_unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.cmdDone_Click.End
+
+program.sub.form1_unload.start
+F.Intrinsic.Control.SetErrorHandler("form1_unload_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+F.ODBC.Connection!conx.Close
+F.Intrinsic.Control.End
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("form1_unload_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3979_MIC_Ord_His.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+Function.Intrinsic.Control.EndIf
+
+
+program.sub.form1_unload.end
+
+Program.Sub.Comments.Start
+${$0$}$GCG_3979_MIC_Ord_His$}$SUPERVSR$}$7/17/2014
+${$1$}$$}$$}$0$}$33008$}$ORD193GI-GRID-ROW-HOOK$}$5/10/2016 3:25:56 PM$}$(Program: ORD193GI; Screen: ORD193A)
+
+Program.Sub.Comments.End
+
